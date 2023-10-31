@@ -47,7 +47,7 @@ aws ec2 describe-security-groups \
 ```
 Use this command to find your ip address:
 ```
-ip addr show eth0 | grep inet | awk '{print $2}' | cut -d '/' -f 1
+curl ifconfig.me
 ```
 
 Use this command to allow your ip address to access the security group on port 80:
@@ -76,19 +76,22 @@ aws ecs list-services --cluster your-cluster-name
 ```
 
 ## 4. Test the service
-To test the running task, we need to find it's public IP address. We can do this by running the following command:
-```
-aws ecs describe-tasks \
---cluster your-cluster-name \
---tasks your-task-id \
---query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text
-```
+To test the running task, we need to find the public IP address of the task.
 
-To list running tasks enter:
+To do so we need the ARN of the task. Use this command to list all running tasks and retrieve the ARN:
+
 ```
 aws ecs list-tasks --cluster your-cluster-name
 ```
-Copy this ARN to your notes because you'll need it in the next command.
+
+Use this command to retrieve details of the running task. We want to note down it's eni-id
+```
+aws ecs describe-tasks \
+--cluster your-cluster-name \
+--tasks "your-task-id" \
+--query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text
+```
+Copy this eni-id to your notes because you'll need it in the next command.
 
 Using your cluster name and the above task id arn, run the following command to describe the task:
 ```
