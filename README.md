@@ -1,5 +1,5 @@
-Creating a containerized website on ECS fargate
-# Instructions
+# Creating a containerized website on ECS fargate
+## Instructions
 
 ## 1. Create a cluster
 We need to create a cluster to run our container in. This is a logical grouping of EC2 instances. We will use the Fargate launch type, which means that we don't need to manage the EC2 instances ourselves.
@@ -60,12 +60,12 @@ Replace the subnet and security group id's with the ones you found above.
 Use these commands to confirm that the service and task have been created:
 ``` 
 aws ecs list-services --cluster your-cluster-name
-
 ```
 
 ## 4. Test the service
 To test the running task, we need to find it's public IP address. We can do this by running the following command:
-```aws ecs describe-tasks --cluster your-cluster-name --tasks your-task-id --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text
+```
+aws ecs describe-tasks --cluster your-cluster-name --tasks your-task-id --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text
 ```
 
 To list running tasks enter:
@@ -88,6 +88,8 @@ aws ec2 describe-network-interfaces \
 --network-interface-id your-eni-id
 ```
 Copy the public IP address and paste it into your browser. You should see the following page:
+
+![NGINX webpage](image.png)
 
 ## 5. Clean up
 To clean up, we need to delete the service and the cluster. We can do this by running the following commands:
