@@ -52,7 +52,10 @@ ip addr show eth0 | grep inet | awk '{print $2}' | cut -d '/' -f 1
 
 Use this command to allow your ip address to access the security group on port 80:
 ```
-aws ec2 authorize-security-group-ingress --group-id sg-your-security-group-id --protocol tcp --port 80 --cidr your-ip/32
+aws ec2 authorize-security-group-ingress \
+--group-id sg-your-security-group-id \
+--protocol tcp --port 80 \
+--cidr your-ip/32
 ```
 
 Next, we'll create the service:
@@ -75,7 +78,10 @@ aws ecs list-services --cluster your-cluster-name
 ## 4. Test the service
 To test the running task, we need to find it's public IP address. We can do this by running the following command:
 ```
-aws ecs describe-tasks --cluster your-cluster-name --tasks your-task-id --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text
+aws ecs describe-tasks \
+--cluster your-cluster-name \
+--tasks your-task-id \
+--query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text
 ```
 
 To list running tasks enter:
