@@ -108,7 +108,6 @@ aws ec2 describe-network-interfaces \
 ```
 Copy the public IP address and paste it into your browser. You should see the following page:
 
-![NGINX webpage](image.png)
 ![NGINX webpage](https://github.com/GeorgieasaService/container-demo/assets/67550608/9f9ecbcd-020c-4457-bc7e-2c0fcb578c3f)
 
 
