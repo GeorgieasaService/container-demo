@@ -96,7 +96,7 @@ To clean up, we need to delete the service and the cluster. We can do this by ru
 ```
 aws ecs delete-service \
 --cluster your-cluster-name \
---service your-service-name
+--service your-service-name \
 --force
 ```
 To confirm that the service has been deleted, run the following command:
