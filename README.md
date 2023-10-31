@@ -32,18 +32,28 @@ Copy their respective vpc and subnet ID's to your notes
 
 Next, enter this command to create your security group, replace the vpc-id with the one you found above:
 ```
-aws ec2 create-security-group --group-name my-security-group --description "my-security-group" --vpc-id vpc-your-vpc-id --tag-specifications 'ResourceType=security-group,Tags=[{Key=Name,Value=my-security-group}]'
+aws ec2 create-security-group \
+--group-name my-security-group --description "my-security-group" \
+--vpc-id vpc-your-vpc-id \
+--tag-specifications 'ResourceType=security-group,Tags=[{Key=Name,Value=my-security-group}]'
 ```
 
 Use this command to find the security group ID:
 ```
-aws ec2 describe-security-groups --filters "Name=group-name,Values=george-ecs-test" --query "SecurityGroups[0].GroupId" --output text
+aws ec2 describe-security-groups \
+--filters "Name=group-name,Values=george-ecs-test" \
+--query "SecurityGroups[0].GroupId" \
+--output text
 ```
 Use this command to find your ip address:
-```ip addr show eth0 | grep inet | awk '{print $2}' | cut -d '/' -f 1```
+```
+ip addr show eth0 | grep inet | awk '{print $2}' | cut -d '/' -f 1
+```
 
 Use this command to allow your ip address to access the security group on port 80:
-```aws ec2 authorize-security-group-ingress --group-id sg-your-security-group-id --protocol tcp --port 80 --cidr your-ip/32```
+```
+aws ec2 authorize-security-group-ingress --group-id sg-your-security-group-id --protocol tcp --port 80 --cidr your-ip/32
+```
 
 Next, we'll create the service:
 ```
