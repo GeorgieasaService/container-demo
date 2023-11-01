@@ -1,4 +1,4 @@
-# Creating a containerized website on ECS fargate
+# Creating a containerized website on ECS Fargate
 ## Instructions
 
 ## 1. Create a cluster
@@ -7,6 +7,7 @@ We can create a cluster using the following command:
 ```
 aws ecs create-cluster --cluster-name ecs-demo-cluster
 ```
+
 Let's confirm that the cluster has been created by running the following command:
 ```
 aws ecs list-clusters
@@ -15,6 +16,7 @@ aws ecs list-clusters
 ## 2. Register a task definition
 ```
 aws ecs register-task-definition --cli-input-json file://task-definition.json
+
 ```
 We can confirm that the task definition has been registered by running the following command:
 ```
@@ -28,7 +30,7 @@ aws ec2 describe-vpcs
 
 aws ec2 describe-subnets
 ```
-Copy their respective vpc and subnet ID's to your notes
+Once you've decided on which vpc and subnet to use in this project copy their respective vpc and subnet ID's to your notes.
 
 Next, enter this command to create your security group, replace the vpc-id with the one you found above:
 ```
@@ -45,6 +47,7 @@ aws ec2 describe-security-groups \
 --query "SecurityGroups[0].GroupId" \
 --output text
 ```
+
 Use this command to find your ip address:
 ```
 curl ifconfig.me
@@ -63,7 +66,7 @@ Replace the subnet and security group id's with the ones you found above.
 ```
 aws ecs create-service \
 --cluster ecs-demo-cluster \
---service-name your-service-name \
+--service-name ecs-demo-service \
 --task-definition ecs-demo-task:1 \
 --desired-count=1 \
 --launch-type "FARGATE" \
@@ -79,7 +82,6 @@ aws ecs list-services --cluster ecs-demo-cluster
 To test the running task, we need to find the public IP address of the task.
 
 To do so we need the ARN of the task. Use this command to list all running tasks and retrieve the ARN:
-
 ```
 aws ecs list-tasks --cluster ecs-demo-cluster
 ```
@@ -106,8 +108,8 @@ To find the public IP address of the task, run the following command:
 aws ec2 describe-network-interfaces \
 --network-interface-id your-eni-id
 ```
-Copy the public IP address and paste it into your browser. You should see the following page:
 
+Copy the public IP address and paste it into your browser. You should see the following page:
 ![NGINX webpage](https://github.com/GeorgieasaService/container-demo/assets/67550608/9f9ecbcd-020c-4457-bc7e-2c0fcb578c3f)
 
 
@@ -116,9 +118,10 @@ To clean up, we need to delete the service and the cluster. We can do this by ru
 ```
 aws ecs delete-service \
 --cluster ecs-demo-cluster \
---service your-service-name \
+--service ecs-demo-service \
 --force
 ```
+
 To confirm that the service has been deleted, run the following command:
 ```
 aws ecs list-services --cluster ecs-demo-cluster
