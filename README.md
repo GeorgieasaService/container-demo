@@ -36,8 +36,7 @@ Next, enter this command to create your security group, replace the vpc-id with 
 ```
 aws ec2 create-security-group \
 --group-name ecs-demo-security-group --description "security group for ecs demo" \
---vpc-id vpc-your-vpc-id \
---tag-specifications 'ResourceType=security-group,Tags=[{Key=Name,Value=my-security-group}]'
+--vpc-id vpc-your-vpc-id
 ```
 
 Use this command to find the security group ID:
@@ -67,7 +66,7 @@ Replace the subnet and security group id's with the ones you found above.
 aws ecs create-service \
 --cluster ecs-demo-cluster \
 --service-name ecs-demo-service \
---task-definition ecs-demo-task:1 \
+--task-definition ecs-demo-task-definition:1 \
 --desired-count=1 \
 --launch-type "FARGATE" \
 --network-configuration "awsvpcConfiguration={subnets=[subnet-your-subnet-id], securityGroups=[sg-your-sg-id], assignPublicIp=ENABLED}"
