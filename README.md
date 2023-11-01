@@ -5,7 +5,7 @@
 We need to create a cluster to run our container in. This is a logical grouping of EC2 instances. We will use the Fargate launch type, which means that we don't need to manage the EC2 instances ourselves.
 We can create a cluster using the following command:
 ```
-aws ecs create-cluster --cluster-name your-cluster-name
+aws ecs create-cluster --cluster-name ecs-demo-cluster
 ```
 Let's confirm that the cluster has been created by running the following command:
 ```
@@ -14,7 +14,7 @@ aws ecs list-clusters
 
 ## 2. Register a task definition
 ```
-aws ecs register-task-definition --cli-input-json file://your-task-definition.json
+aws ecs register-task-definition --cli-input-json file://task-definition.json
 ```
 We can confirm that the task definition has been registered by running the following command:
 ```
@@ -33,7 +33,7 @@ Copy their respective vpc and subnet ID's to your notes
 Next, enter this command to create your security group, replace the vpc-id with the one you found above:
 ```
 aws ec2 create-security-group \
---group-name my-security-group --description "my-security-group" \
+--group-name ecs-demo-security-group --description "security group for ecs demo" \
 --vpc-id vpc-your-vpc-id \
 --tag-specifications 'ResourceType=security-group,Tags=[{Key=Name,Value=my-security-group}]'
 ```
@@ -41,7 +41,7 @@ aws ec2 create-security-group \
 Use this command to find the security group ID:
 ```
 aws ec2 describe-security-groups \
---filters "Name=group-name,Values=george-ecs-test" \
+--filters "Name=group-name,Values=ecs-demo-security-group" \
 --query "SecurityGroups[0].GroupId" \
 --output text
 ```
@@ -53,26 +53,26 @@ curl ifconfig.me
 Use this command to allow your ip address to access the security group on port 80:
 ```
 aws ec2 authorize-security-group-ingress \
---group-id sg-your-security-group-id \
+--group-id your-security-group-id \
 --protocol tcp --port 80 \
 --cidr your-ip/32
 ```
 
 Next, we'll create the service:
+Replace the subnet and security group id's with the ones you found above.
 ```
 aws ecs create-service \
---cluster your-cluster-name \
+--cluster ecs-demo-cluster \
 --service-name your-service-name \
---task-definition http-server:1 \
+--task-definition ecs-demo-task:1 \
 --desired-count=1 \
 --launch-type "FARGATE" \
 --network-configuration "awsvpcConfiguration={subnets=[subnet-your-subnet-id], securityGroups=[sg-your-sg-id], assignPublicIp=ENABLED}"
 ```
-Replace the subnet and security group id's with the ones you found above.
 
 Use these commands to confirm that the service and task have been created:
 ``` 
-aws ecs list-services --cluster your-cluster-name
+aws ecs list-services --cluster ecs-demo-cluster
 ```
 
 ## 4. Test the service
@@ -81,13 +81,13 @@ To test the running task, we need to find the public IP address of the task.
 To do so we need the ARN of the task. Use this command to list all running tasks and retrieve the ARN:
 
 ```
-aws ecs list-tasks --cluster your-cluster-name
+aws ecs list-tasks --cluster ecs-demo-cluster
 ```
 
 Use this command to retrieve details of the running task. We want to note down it's eni-id
 ```
 aws ecs describe-tasks \
---cluster your-cluster-name \
+--cluster ecs-demo-cluster \
 --tasks "your-task-id" \
 --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text
 ```
@@ -96,7 +96,7 @@ Copy this eni-id to your notes because you'll need it in the next command.
 Using your cluster name and the above task id arn, run the following command to describe the task:
 ```
 aws ecs describe-tasks \
---cluster your-cluster-name \
+--cluster ecs-demo-cluster \
 --tasks your-task-id-arn
 ```
 Copy the eni-id to your notes.
@@ -115,11 +115,11 @@ Copy the public IP address and paste it into your browser. You should see the fo
 To clean up, we need to delete the service and the cluster. We can do this by running the following commands:
 ```
 aws ecs delete-service \
---cluster your-cluster-name \
+--cluster ecs-demo-cluster \
 --service your-service-name \
 --force
 ```
 To confirm that the service has been deleted, run the following command:
 ```
-aws ecs list-services --cluster your-cluster-name
+aws ecs list-services --cluster ecs-demo-cluster
 ```
