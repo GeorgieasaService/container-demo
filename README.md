@@ -125,3 +125,7 @@ To confirm that the service has been deleted, run the following command:
 ```
 aws ecs list-services --cluster ecs-demo-cluster
 ```
+Before Finishing off, delete your security group
+```
+aws ec2 delete-security-group --group-id your-security-group-id
+```
