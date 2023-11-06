@@ -1,0 +1,22 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "ecs-demo-task",
+            "image": "your-dockerhub-username/my-webserver",
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ]
+        }
+    ],
+    "memory": "512",
+    "cpu": "256",
+    "networkMode": "awsvpc",
+    "family": "ecs-demo-task-definition",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ]
+}
