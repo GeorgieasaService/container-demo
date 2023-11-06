@@ -72,7 +72,7 @@ Confirn that that your docker image has been pushed to Docker Hub, you can now o
 
 Once there, replace the image name with your username/my-webserver. 
 ```
-"image": "your-dockerhub-username/my-webserver",
+"image": "your-dockerhub-username/my-webserver:v1.0.0",
 ```
 
 This will allow ECS to pull your image from Docker Hub. After this step you can follow the previous instructions in the README.md file in the main directory. Remember to use the task definition file contained in this directory.
